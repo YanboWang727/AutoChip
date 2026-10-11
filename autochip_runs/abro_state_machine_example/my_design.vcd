@@ -1,0 +1,222 @@
+$date
+	Sat Oct 10 21:42:25 2026
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module tb $end
+$var wire 4 ! State [3:0] $end
+$var wire 1 " O $end
+$var reg 1 # A $end
+$var reg 1 $ B $end
+$var reg 1 % clk $end
+$var reg 1 & expected_O $end
+$var reg 4 ' expected_state [3:0] $end
+$var reg 1 ( rst_n $end
+$var reg 1 ) vcd_clk $end
+$var integer 32 * i [31:0] $end
+$var integer 32 + mismatches [31:0] $end
+$var integer 32 , samples [31:0] $end
+$scope module uut $end
+$var wire 1 # A $end
+$var wire 1 $ B $end
+$var wire 1 " O $end
+$var wire 4 - State [3:0] $end
+$var wire 1 % clk $end
+$var wire 1 ( rst_n $end
+$var parameter 4 . GOT_A $end
+$var parameter 4 / GOT_AB $end
+$var parameter 4 0 GOT_B $end
+$var parameter 4 1 IDLE $end
+$var reg 4 2 current_state [3:0] $end
+$var reg 4 3 next_state [3:0] $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+b1 1
+b1000 0
+b100 /
+b10 .
+$end
+#0
+$dumpvars
+b1 3
+b1 2
+b1 -
+b0 ,
+b0 +
+b0 *
+x)
+0(
+b1 '
+0&
+0%
+0$
+0#
+0"
+b1 !
+$end
+#5000
+1(
+1%
+#10000
+0%
+#15000
+b1000 3
+1$
+b1 *
+b1 ,
+1%
+#20000
+0%
+#25000
+b1000 !
+b1000 -
+b1000 2
+b100 3
+b10 '
+0$
+1#
+b10 *
+b10 ,
+1%
+#30000
+0%
+#35000
+1"
+b100 !
+b100 -
+b100 2
+b100 3
+b100 '
+1&
+1$
+b11 *
+b1 +
+b11 ,
+1%
+#40000
+0%
+#45000
+b100 *
+b100 ,
+1%
+#50000
+0%
+#55000
+0"
+0&
+0$
+0#
+b101 *
+b101 ,
+1%
+#60000
+0%
+#65000
+1"
+b10 '
+1#
+b110 *
+b110 ,
+1%
+#70000
+0%
+#75000
+b1 '
+1$
+0#
+b111 *
+b10 +
+b111 ,
+1%
+#80000
+0%
+#85000
+b100 '
+1&
+1#
+b1000 *
+b11 +
+b1000 ,
+1%
+#90000
+0%
+#95000
+0"
+0&
+0$
+0#
+b1001 *
+b1001 ,
+1%
+#100000
+0%
+#105000
+1"
+b10 '
+1#
+b1010 *
+b1010 ,
+1%
+#110000
+0%
+#115000
+b1 '
+1$
+0#
+b1011 *
+b100 +
+b1011 ,
+1%
+#120000
+0%
+#125000
+b100 '
+1&
+1#
+b1100 *
+b101 +
+b1100 ,
+1%
+#130000
+0%
+#135000
+0"
+0&
+0$
+0#
+b1101 *
+b1101 ,
+1%
+#140000
+0%
+#145000
+1"
+b10 '
+1#
+b1110 *
+b1110 ,
+1%
+#150000
+0%
+#155000
+b1 '
+1$
+0#
+b1111 *
+b110 +
+b1111 ,
+1%
+#160000
+0%
+#165000
+b10000 *
+b111 +
+b10000 ,
+1%

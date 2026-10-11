@@ -1,0 +1,45 @@
+VCD info: dumpfile my_design.vcd opened for output.
+Results for die_select 00:
+  Rolled           1:        246 times
+  Rolled           2:        250 times
+  Rolled           3:        251 times
+  Rolled           4:        253 times
+Results for die_select 01:
+  Rolled           1:        165 times
+  Rolled           2:        167 times
+  Rolled           3:        171 times
+  Rolled           4:        167 times
+  Rolled           5:        167 times
+  Rolled           6:        163 times
+Results for die_select 10:
+  Rolled           1:        121 times
+  Rolled           2:        122 times
+  Rolled           3:        127 times
+  Rolled           4:        127 times
+  Rolled           5:        125 times
+  Rolled           6:        127 times
+  Rolled           7:        125 times
+  Rolled           8:        126 times
+Results for die_select 11:
+  Rolled           1:         47 times
+  Rolled           2:         52 times
+  Rolled           3:         50 times
+  Rolled           4:         50 times
+  Rolled           5:         51 times
+  Rolled           6:         51 times
+  Rolled           7:         52 times
+  Rolled           8:         51 times
+  Rolled           9:         52 times
+  Rolled          10:         51 times
+  Rolled          11:         50 times
+  Rolled          12:         50 times
+  Rolled          13:         51 times
+  Rolled          14:         52 times
+  Rolled          15:         50 times
+  Rolled          16:         52 times
+  Rolled          17:         46 times
+  Rolled          18:         48 times
+  Rolled          19:         47 times
+  Rolled          20:         47 times
+Testbench completed successfully.
+Mismatches: 0 in 4000 samples

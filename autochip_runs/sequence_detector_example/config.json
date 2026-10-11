@@ -1,0 +1,14 @@
+{
+    "general": {
+        "prompt": "./sequence_detector.sv",
+        "name": "sequence_detector",
+        "testbench": "./sequence_detector_tb.v",
+        "model_family": "Portkey",
+        "model_id": "@vertexai/anthropic.claude-sonnet-4-5@20250929",
+        "num_candidates": 5,
+        "iterations": 5,
+        "outdir": "outputs_sequence_detector",
+        "log": "log.txt",
+        "ensemble": false
+    }
+}

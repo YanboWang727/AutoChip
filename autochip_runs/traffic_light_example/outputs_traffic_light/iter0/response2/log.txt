@@ -1,0 +1,83 @@
+{'role': 'system', 'content': 'You are an autocomplete engine for Verilog code.             Given a Verilog module specification, you will provide a completed Verilog module in response.             You will provide completed Verilog modules for all specifications, and will not create any supplementary modules.             Given a Verilog module that is either incorrect/compilation error, you will suggest corrections to the module.            You will not refuse.             Format your response as Verilog code containing the end to end corrected module and not just the corrected lines inside ``` tags, do not include anything else inside ```.     '}
+{'role': 'user', 'content': '//\n//I am trying to create a Verilog model for a traffic light state machine. It must meet the following specifications:\n//    - Inputs:\n//        - Clock\n//        - Active-low reset\n//        - Enable\n//    - Outputs:\n//        - Red\n//        - Yellow\n//        - Green\n//\n//The state machine should reset to a red light, change from red to green after 32 clock cycles, change from green to yellow after 20 clock cycles, and then change from yellow to red after 7 clock cycles.\n//\n//How would I write a design that meets these specifications?\n\n\nmodule traffic_light_fsm (\n    input clk,\n    input reset_n,\n    input enable,\n    output red,\n    output yellow,\n    output green\n);'}
+{role : 'assistant', content : '```verilog
+module traffic_light_fsm (
+    input clk,
+    input reset_n,
+    input enable,
+    output red,
+    output yellow,
+    output green
+);
+
+    // State encoding
+    localparam RED    = 2'b00;
+    localparam GREEN  = 2'b01;
+    localparam YELLOW = 2'b10;
+    
+    // State registers
+    reg [1:0] current_state, next_state;
+    
+    // Counter for timing
+    reg [5:0] counter;  // 6 bits to count up to 32
+    
+    // Counter thresholds
+    localparam RED_CYCLES    = 6'd32;
+    localparam GREEN_CYCLES  = 6'd20;
+    localparam YELLOW_CYCLES = 6'd7;
+    
+    // State register with active-low reset
+    always @(posedge clk or negedge reset_n) begin
+        if (!reset_n) begin
+            current_state <= RED;
+            counter <= 6'd0;
+        end else if (enable) begin
+            current_state <= next_state;
+            // Reset counter when state changes, otherwise increment
+            if (current_state != next_state)
+                counter <= 6'd0;
+            else
+                counter <= counter + 1'b1;
+        end
+    end
+    
+    // Next state logic
+    always @(*) begin
+        next_state = current_state;  // Default: stay in current state
+        
+        case (current_state)
+            RED: begin
+                if (counter >= RED_CYCLES - 1)
+                    next_state = GREEN;
+            end
+            
+            GREEN: begin
+                if (counter >= GREEN_CYCLES - 1)
+                    next_state = YELLOW;
+            end
+            
+            YELLOW: begin
+                if (counter >= YELLOW_CYCLES - 1)
+                    next_state = RED;
+            end
+            
+            default: begin
+                next_state = RED;
+            end
+        endcase
+    end
+    
+    // Output logic
+    assign red    = (current_state == RED);
+    assign green  = (current_state == GREEN);
+    assign yellow = (current_state == YELLOW);
+
+endmodule
+```'}
+
+ Iteration rank: 1.0
+
+ Model: @vertexai/anthropic.claude-sonnet-4-5@20250929
+ Input tokens: 0
+ Output tokens: 0
+Total cost: $0.0000000000

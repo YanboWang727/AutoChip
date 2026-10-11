@@ -1,0 +1,14 @@
+{
+    "general": {
+        "prompt": "./cpu_8_bit.sv",
+        "name": "cpu_8_bit",
+        "testbench": "./cpu_8_bit_tb.v",
+        "model_family": "Portkey",
+        "model_id": "@vertexai/anthropic.claude-sonnet-4-5@20250929",
+        "num_candidates": 5,
+        "iterations": 5,
+        "outdir": "outputs_cpu_8_bit",
+        "log": "log.txt",
+        "ensemble": false
+    }
+}

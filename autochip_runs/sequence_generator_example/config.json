@@ -1,0 +1,14 @@
+{
+    "general": {
+        "prompt": "./sequence_generator.sv",
+        "name": "sequence_generator",
+        "testbench": "./sequence_generator_tb.v",
+        "model_family": "Portkey",
+        "model_id": "@vertexai/anthropic.claude-sonnet-4-5@20250929",
+        "num_candidates": 5,
+        "iterations": 5,
+        "outdir": "outputs_sequence_generator",
+        "log": "log.txt",
+        "ensemble": false
+    }
+}

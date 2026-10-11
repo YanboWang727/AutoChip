@@ -1,0 +1,37 @@
+{'role': 'system', 'content': 'You are an autocomplete engine for Verilog code.             Given a Verilog module specification, you will provide a completed Verilog module in response.             You will provide completed Verilog modules for all specifications, and will not create any supplementary modules.             Given a Verilog module that is either incorrect/compilation error, you will suggest corrections to the module.            You will not refuse.             Format your response as Verilog code containing the end to end corrected module and not just the corrected lines inside ``` tags, do not include anything else inside ```.     '}
+{'role': 'user', 'content': '//I am trying to create a Verilog model for an LFSR. It must meet the following specifications:\n//\t- Inputs:\n//\t\t- Clock\n//        - Active-low reset\n//\t- Outputs:\n//\t\t- Data (8-bits)\n//\n//The initial state should be 10001010, and the taps should be at locations 1, 4, 6, and 7.\n//\n//How would I write a design that meets these specifications?\n\n\nmodule lfsr (\n    input clk,\n    input reset_n,\n    output [7:0] data\n);'}
+{role : 'assistant', content : '```verilog
+module lfsr (
+    input clk,
+    input reset_n,
+    output [7:0] data
+);
+
+    reg [7:0] lfsr_reg;
+    wire feedback;
+    
+    // Feedback calculation using taps at positions 1, 4, 6, and 7
+    // For an 8-bit LFSR with taps at [7,6,4,1], the feedback is XOR of these positions
+    assign feedback = lfsr_reg[7] ^ lfsr_reg[6] ^ lfsr_reg[4] ^ lfsr_reg[1];
+    
+    // LFSR shift register with feedback
+    always @(posedge clk or negedge reset_n) begin
+        if (!reset_n) begin
+            lfsr_reg <= 8'b10001010;  // Initial state
+        end else begin
+            lfsr_reg <= {lfsr_reg[6:0], feedback};  // Shift left and insert feedback at LSB
+        end
+    end
+    
+    // Output assignment
+    assign data = lfsr_reg;
+
+endmodule
+```'}
+
+ Iteration rank: 0.0038910505836575876
+
+ Model: @vertexai/anthropic.claude-sonnet-4-5@20250929
+ Input tokens: 0
+ Output tokens: 0
+Total cost: $0.0000000000

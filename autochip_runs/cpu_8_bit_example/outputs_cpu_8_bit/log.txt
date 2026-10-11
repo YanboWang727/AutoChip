@@ -1,0 +1,215 @@
+system: You are an autocomplete engine for Verilog code.             Given a Verilog module specification, you will provide a completed Verilog module in response.             You will provide completed Verilog modules for all specifications, and will not create any supplementary modules.             Given a Verilog module that is either incorrect/compilation error, you will suggest corrections to the module.            You will not refuse.             Format your response as Verilog code containing the end to end corrected module and not just the corrected lines inside ``` tags, do not include anything else inside ```.     
+user: //Let us make a brand new microprocessor design together. We’re severely constrained on space and I/O. 
+//We have to fit in 1000 standard cells of an ASIC, 
+//so I think we will need to restrict ourselves to an accumulator based 8-bit architecture with no multi-byte instructions. 
+//
+//The microarchitecture is suggested complete an instruction in 2 stages
+//The instruction shall implement the following ISA:
+//
+//Memory instructions use a 3-bit opcode and a 5-bit address:
+//000: LDA — load M[address] into ACC.
+//001: STA — store ACC in M[address].
+//010: ADD — add M[address] to ACC.
+//011: SUB — subtract M[address] from ACC.
+//100: AND — bitwise AND.
+//101: OR — bitwise OR.
+//110: XOR — bitwise XOR.
+//
+//1110iiii: ADDI — add the unsigned 4-bit immediate iiii to ACC.
+//
+//The following are complete instruction bytes:
+//F0: JMP — jump to ACC.
+//F1: JSR — save the next instruction address in ACC and jump to the old ACC.
+//F2: BEQ_FWD — if ACC is zero, add 2 to the already-incremented PC.
+//F3: BEQ_BWD — if ACC is zero, subtract 3 from that PC.
+//F4: BNE_FWD — same forward branch when ACC is nonzero.
+//F5: BNE_BWD — same backward branch when ACC is nonzero.
+//F6: SHL — shift ACC left by 1.
+//F7: SHR — shift ACC right by 1.
+//F8: SHL4 — shift ACC left by 4.
+//F9: ROL — rotate ACC left by 1.
+//FA: ROR — rotate ACC right by 1.
+//FB: LDAR — load M[ACC] into ACC.
+//FC: DEC — subtract 1 from ACC.
+//FD: CLR — clear ACC.
+//FE: INV — invert every ACC bit.
+//FF: HLT — stop execution until reset.
+//
+//Use an 8-bit register named acc.
+//Use a 5-bit register named pc.
+//Use a shared instruction/data memory named mem with 32 entries of 8 bits.
+
+
+
+module cpu_8_bit (
+    input clk,
+    input reset_n
+);
+assistant: module cpu_8_bit (
+    input clk,
+    input reset_n
+);
+
+    // Registers
+    reg [7:0] acc;
+    reg [4:0] pc;
+    reg [7:0] mem [0:31];
+    
+    // Internal signals
+    reg [7:0] instr;
+    reg stage;  // 0 = fetch, 1 = execute
+    
+    // Instruction decode
+    wire [2:0] opcode = instr[7:5];
+    wire [4:0] addr = instr[4:0];
+    wire [3:0] imm4 = instr[3:0];
+    wire is_mem_op = (opcode != 3'b111);
+    wire is_addi = (instr[7:4] == 4'b1110);
+    wire is_special = (instr[7:4] == 4'b1111);
+    
+    always @(posedge clk or negedge reset_n) begin
+        if (!reset_n) begin
+            acc <= 8'h00;
+            pc <= 5'h00;
+            stage <= 1'b0;
+            instr <= 8'h00;
+        end else begin
+            if (stage == 1'b0) begin
+                // Fetch stage
+                instr <= mem[pc];
+                pc <= pc + 5'd1;
+                stage <= 1'b1;
+            end else begin
+                // Execute stage
+                stage <= 1'b0;
+                
+                if (is_mem_op && !is_addi) begin
+                    case (opcode)
+                        3'b000: acc <= mem[addr];              // LDA
+                        3'b001: mem[addr] <= acc;              // STA
+                        3'b010: acc <= acc + mem[addr];        // ADD
+                        3'b011: acc <= acc - mem[addr];        // SUB
+                        3'b100: acc <= acc & mem[addr];        // AND
+                        3'b101: acc <= acc | mem[addr];        // OR
+                        3'b110: acc <= acc ^ mem[addr];        // XOR
+                        default: ;
+                    endcase
+                end else if (is_addi) begin
+                    acc <= acc + {4'b0000, imm4};              // ADDI
+                end else if (is_special) begin
+                    case (instr[3:0])
+                        4'h0: pc <= acc[4:0];                  // JMP
+                        4'h1: begin                            // JSR
+                            acc <= {3'b000, pc};
+                            pc <= acc[4:0];
+                        end
+                        4'h2: if (acc == 8'h00) pc <= pc + 5'd2;  // BEQ_FWD
+                        4'h3: if (acc == 8'h00) pc <= pc - 5'd3;  // BEQ_BWD
+                        4'h4: if (acc != 8'h00) pc <= pc + 5'd2;  // BNE_FWD
+                        4'h5: if (acc != 8'h00) pc <= pc - 5'd3;  // BNE_BWD
+                        4'h6: acc <= {acc[6:0], 1'b0};         // SHL
+                        4'h7: acc <= {1'b0, acc[7:1]};         // SHR
+                        4'h8: acc <= {acc[3:0], 4'b0000};      // SHL4
+                        4'h9: acc <= {acc[6:0], acc[7]};       // ROL
+                        4'hA: acc <= {acc[0], acc[7:1]};       // ROR
+                        4'hB: acc <= mem[acc[4:0]];            // LDAR
+                        4'hC: acc <= acc - 8'd1;               // DEC
+                        4'hD: acc <= 8'h00;                    // CLR
+                        4'hE: acc <= ~acc;                     // INV
+                        4'hF: stage <= 1'b1;                   // HLT (stay in execute)
+                        default: ;
+                    endcase
+                end
+            end
+        end
+    end
+
+endmodule
+
+
+Time to Generate: 71.0376808643341
+Best ranked response at iteration 0 with response number 0
+Rank of best response: 1.0
+Best response module:
+module cpu_8_bit (
+    input clk,
+    input reset_n
+);
+
+    // Registers
+    reg [7:0] acc;
+    reg [4:0] pc;
+    reg [7:0] mem [0:31];
+    
+    // Internal signals
+    reg [7:0] instr;
+    reg stage;  // 0 = fetch, 1 = execute
+    
+    // Instruction decode
+    wire [2:0] opcode = instr[7:5];
+    wire [4:0] addr = instr[4:0];
+    wire [3:0] imm4 = instr[3:0];
+    wire is_mem_op = (opcode != 3'b111);
+    wire is_addi = (instr[7:4] == 4'b1110);
+    wire is_special = (instr[7:4] == 4'b1111);
+    
+    always @(posedge clk or negedge reset_n) begin
+        if (!reset_n) begin
+            acc <= 8'h00;
+            pc <= 5'h00;
+            stage <= 1'b0;
+            instr <= 8'h00;
+        end else begin
+            if (stage == 1'b0) begin
+                // Fetch stage
+                instr <= mem[pc];
+                pc <= pc + 5'd1;
+                stage <= 1'b1;
+            end else begin
+                // Execute stage
+                stage <= 1'b0;
+                
+                if (is_mem_op && !is_addi) begin
+                    case (opcode)
+                        3'b000: acc <= mem[addr];              // LDA
+                        3'b001: mem[addr] <= acc;              // STA
+                        3'b010: acc <= acc + mem[addr];        // ADD
+                        3'b011: acc <= acc - mem[addr];        // SUB
+                        3'b100: acc <= acc & mem[addr];        // AND
+                        3'b101: acc <= acc | mem[addr];        // OR
+                        3'b110: acc <= acc ^ mem[addr];        // XOR
+                        default: ;
+                    endcase
+                end else if (is_addi) begin
+                    acc <= acc + {4'b0000, imm4};              // ADDI
+                end else if (is_special) begin
+                    case (instr[3:0])
+                        4'h0: pc <= acc[4:0];                  // JMP
+                        4'h1: begin                            // JSR
+                            acc <= {3'b000, pc};
+                            pc <= acc[4:0];
+                        end
+                        4'h2: if (acc == 8'h00) pc <= pc + 5'd2;  // BEQ_FWD
+                        4'h3: if (acc == 8'h00) pc <= pc - 5'd3;  // BEQ_BWD
+                        4'h4: if (acc != 8'h00) pc <= pc + 5'd2;  // BNE_FWD
+                        4'h5: if (acc != 8'h00) pc <= pc - 5'd3;  // BNE_BWD
+                        4'h6: acc <= {acc[6:0], 1'b0};         // SHL
+                        4'h7: acc <= {1'b0, acc[7:1]};         // SHR
+                        4'h8: acc <= {acc[3:0], 4'b0000};      // SHL4
+                        4'h9: acc <= {acc[6:0], acc[7]};       // ROL
+                        4'hA: acc <= {acc[0], acc[7:1]};       // ROR
+                        4'hB: acc <= mem[acc[4:0]];            // LDAR
+                        4'hC: acc <= acc - 8'd1;               // DEC
+                        4'hD: acc <= 8'h00;                    // CLR
+                        4'hE: acc <= ~acc;                     // INV
+                        4'hF: stage <= 1'b1;                   // HLT (stay in execute)
+                        default: ;
+                    endcase
+                end
+            end
+        end
+    end
+
+endmodule
+
+

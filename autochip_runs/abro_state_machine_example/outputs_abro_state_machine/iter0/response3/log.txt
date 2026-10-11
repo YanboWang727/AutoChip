@@ -1,0 +1,81 @@
+{'role': 'system', 'content': 'You are an autocomplete engine for Verilog code.             Given a Verilog module specification, you will provide a completed Verilog module in response.             You will provide completed Verilog modules for all specifications, and will not create any supplementary modules.             Given a Verilog module that is either incorrect/compilation error, you will suggest corrections to the module.            You will not refuse.             Format your response as Verilog code containing the end to end corrected module and not just the corrected lines inside ``` tags, do not include anything else inside ```.     '}
+{'role': 'user', 'content': '//I am trying to create a Verilog model for an ABRO state machine. It must meet the following specifications:\n//   - Inputs:\n//        - Clock\n//      - Active-low reset\n//        - A\n//        - B\n//    - Outputs:\n//        - O\n//        - State\n//\n//Other than the main output from ABRO machine, it should output the current state of the machine for use in verification.\n//\n//The states for this state machine should be one-hot encoded.\n//\n//How would I write a design that meets these specifications?\n\nmodule abro_state_machine (\n    input clk,\n    input rst_n,\n    input A,\n    input B,\n    output O,\n    output [3:0] State\n);'}
+{role : 'assistant', content : '```verilog
+module abro_state_machine (
+    input clk,
+    input rst_n,
+    input A,
+    input B,
+    output O,
+    output [3:0] State
+);
+
+    // One-hot encoded state definitions
+    localparam IDLE  = 4'b0001;
+    localparam A_SET = 4'b0010;
+    localparam B_SET = 4'b0100;
+    localparam DONE  = 4'b1000;
+    
+    // State register
+    reg [3:0] current_state;
+    reg [3:0] next_state;
+    
+    // Output assignment
+    assign State = current_state;
+    assign O = (current_state == DONE);
+    
+    // State register with active-low reset
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            current_state <= IDLE;
+        end else begin
+            current_state <= next_state;
+        end
+    end
+    
+    // Next state logic
+    always @(*) begin
+        next_state = current_state; // Default to stay in current state
+        
+        case (current_state)
+            IDLE: begin
+                if (A && B) begin
+                    next_state = DONE;
+                end else if (A) begin
+                    next_state = A_SET;
+                end else if (B) begin
+                    next_state = B_SET;
+                end
+            end
+            
+            A_SET: begin
+                if (B) begin
+                    next_state = DONE;
+                end
+            end
+            
+            B_SET: begin
+                if (A) begin
+                    next_state = DONE;
+                end
+            end
+            
+            DONE: begin
+                next_state = IDLE;
+            end
+            
+            default: begin
+                next_state = IDLE;
+            end
+        endcase
+    end
+
+endmodule
+```'}
+
+ Iteration rank: 0.125
+
+ Model: @vertexai/anthropic.claude-sonnet-4-5@20250929
+ Input tokens: 0
+ Output tokens: 0
+Total cost: $0.0000000000

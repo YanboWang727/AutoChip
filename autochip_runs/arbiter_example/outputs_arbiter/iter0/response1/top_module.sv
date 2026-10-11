@@ -1,0 +1,56 @@
+module top_module (
+    input clk,
+    input resetn,
+    input [3:1] r,
+    output reg [3:1] g
+);
+
+    // State encoding
+    typedef enum reg [1:0] {
+        A = 2'b00,
+        B = 2'b01,
+        C = 2'b10
+    } state_t;
+
+    state_t state, next_state;
+
+    // State transition
+    always @(*) begin
+        case (state)
+            A: begin
+                if (r[1]) next_state = B;  // Grant to device 1
+                else if (r[2]) next_state = C; // Grant to device 2
+                else if (r[3]) next_state = A; // Grant to device 3 (only if others are not requesting)
+                else next_state = A; // Stay in state A if no requests
+            end
+            B: begin
+                if (r[1]) next_state = B; // Stay in B if request from device 1
+                else next_state = A; // Go back to A otherwise
+            end
+            C: begin
+                if (r[2]) next_state = C; // Stay in C if request from device 2
+                else next_state = A; // Go back to A otherwise
+            end
+            default: next_state = A; // Add default case to avoid latches
+        endcase
+    end
+
+    // State flip-flops
+    always @(posedge clk or negedge resetn) begin
+        if (!resetn) 
+            state <= A; // Reset to state A
+        else 
+            state <= next_state; // Update state on clock edge
+    end
+
+    // Outputs assignment
+    always @(*) begin
+        g = 3'b000; // Default all grants to 0
+        case (state)
+            B: g[1] = 1; // Grant to device 1
+            C: g[2] = 1; // Grant to device 2
+            default: g[3] = 1; // Grant to device 3 is part of state A but shouldn't grant in practice
+        endcase
+    end
+
+endmodule

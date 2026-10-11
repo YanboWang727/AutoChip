@@ -1,0 +1,14 @@
+{
+    "general": {
+        "prompt": "./abro_state_machine.sv",
+        "name": "abro_state_machine",
+        "testbench": "./abro_state_machine_tb.v",
+        "model_family": "Portkey",
+        "model_id": "@vertexai/anthropic.claude-sonnet-4-5@20250929",
+        "num_candidates": 5,
+        "iterations": 5,
+        "outdir": "outputs_abro_state_machine",
+        "log": "log.txt",
+        "ensemble": false
+    }
+}

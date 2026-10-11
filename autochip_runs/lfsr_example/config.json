@@ -1,0 +1,14 @@
+{
+    "general": {
+        "prompt": "./lfsr.sv",
+        "name": "lfsr",
+        "testbench": "./lfsr_tb.v",
+        "model_family": "Portkey",
+        "model_id": "@vertexai/anthropic.claude-sonnet-4-5@20250929",
+        "num_candidates": 5,
+        "iterations": 5,
+        "outdir": "outputs_lfsr",
+        "log": "log.txt",
+        "ensemble": false
+    }
+}
